@@ -5,19 +5,17 @@ const Header = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const navigate = useNavigate();
     const location = useLocation();
-
+    
     useEffect(() => {
-        const searchParams = new URLSearchParams(location.search);
-        setSearchTerm(searchParams.get('search') || '');
+        const params = new URLSearchParams(location.search);
+        setSearchTerm(params.get('search') || '');
     }, [location.search]);
 
-    const handleInputChange = (e) => {
-        const value = e.target.value;
-        setSearchTerm(value);
 
-        // Обновляем URL сразу при изменении input
-        if (location.pathname === '/cars') {
-            navigate(`?search=${encodeURIComponent(value)}`, { replace: true });
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter' && searchTerm.trim()) {
+            // Перенаправляем на страницу результатов с поисковым запросом
+            navigate(`/cars?search=${encodeURIComponent(searchTerm)}`);
         }
     };
 
@@ -28,8 +26,18 @@ const Header = () => {
                 placeholder="Search or type"
                 className="search-box"
                 value={searchTerm}
-                onChange={handleInputChange}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyDown={handleKeyDown}
              />
+            {/*<form onSubmit={handleSearch} className="search-form">
+                <input
+                    type="text"
+                    placeholder="Поиск по марке или модели..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                <button type="submit">Найти</button>
+            </form>*/}
             <img src="../images/profile_icon.png" className="img-profile"/>
         </div>
     )
